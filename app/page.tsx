@@ -1,3 +1,4 @@
+"use client";
 /// <reference types="@react-three/fiber" />
 // BoostRev AI - 3D Enhanced MVP with Vercel-Ready Setup
 // Tech: React + Tailwind + React Three Fiber + AI + Dropshipping Hooks
