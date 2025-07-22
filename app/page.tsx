@@ -9,6 +9,15 @@ import { Input } from './components/ui/input';
 import { Card, CardContent } from './components/ui/card';
 import axios from 'axios';
 import { ThreeElements } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF } from '@react-three/drei';
+
+function HeroModel() {
+  // @ts-ignore
+  const gltf = useGLTF('/models/hero.glb');
+  // @ts-ignore
+  return <primitive object={gltf.scene} scale={1.5} />;
+}
 
 export default function Dashboard() {
   const [storeData, setStoreData] = useState<{ id: number; title: string; sales: number }[]>([]);
@@ -43,13 +52,18 @@ export default function Dashboard() {
         <p className="text-gray-600">Your one-click dropshipping assistant</p>
       </header>
 
-      {/* Hero Banner Image */}
-      <section className="w-full flex justify-center mt-6">
-        <img
-          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80"
-          alt="BoostRev AI Hero"
-          className="rounded-xl shadow-lg w-full max-w-3xl object-cover"
-        />
+      {/* Hero 3D Model Section */}
+      <section className="w-full h-[400px] flex justify-center items-center mt-6">
+        <Canvas>
+          {/* @ts-ignore */}
+          <ambientLight intensity={0.5} />
+          {/* @ts-ignore */}
+          <directionalLight position={[5, 5, 5]} />
+          <Suspense fallback={null}>
+            <HeroModel />
+          </Suspense>
+          <OrbitControls enableZoom={false} />
+        </Canvas>
       </section>
 
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -89,6 +103,18 @@ export default function Dashboard() {
                 <CardContent>
                   <h3 className="text-lg font-bold">{prod.title}</h3>
                   <p className="text-sm text-gray-500">{prod.revenuePotential}</p>
+                  <Button
+                    className="mt-2"
+                    onClick={async () => {
+                      const res = await axios.post('/api/place-order', {
+                        productId: prod.title,
+                        userId: 'demo-user-123',
+                      });
+                      alert(res.data.message);
+                    }}
+                  >
+                    Dropship This
+                  </Button>
                 </CardContent>
               </Card>
             ))}
